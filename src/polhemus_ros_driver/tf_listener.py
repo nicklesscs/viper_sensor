@@ -26,9 +26,10 @@ if __name__ == '__main__':
         try:
             trans = tfBuffer.lookup_transform(target_frame, source_frame, rospy.Time(0), rospy.Duration(0.1))
 
-            print(trans.transform.translation.x, trans.transform.translation.y, trans.transform.translation.z,
-                  trans.transform.rotation.x, trans.transform.rotation.y, trans.transform.rotation.z,
-                  trans.transform.rotation.w)
+            data = str(trans.transform.translation.x) + ' ' + str(trans.transform.translation.y) + ' ' + str(trans.transform.translation.z) + ' ' + str(trans.transform.rotation.x) + ' ' +str(trans.transform.rotation.y) + ' ' + str(trans.transform.rotation.z) + ' ' + str(trans.transform.rotation.w) + '\n'
+            print(data)
+            with open('transformation.txt', 'a') as file:
+                file.write(data)
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
             rospy.loginfo('Unable to find transformation :p')
             continue
