@@ -28,6 +28,9 @@ if __name__ == '__main__':
 
             data = str(trans.transform.translation.x) + ' ' + str(trans.transform.translation.y) + ' ' + str(trans.transform.translation.z) + ' ' + str(trans.transform.rotation.x) + ' ' +str(trans.transform.rotation.y) + ' ' + str(trans.transform.rotation.z) + ' ' + str(trans.transform.rotation.w) + '\n'
             print(data)
+
+            #create a url socket server for a connection 
+            #1.publish the data to a topic
             with open('transformation.txt', 'a') as file:
                 file.write(data)
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
