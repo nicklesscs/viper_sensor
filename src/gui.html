@@ -37,11 +37,33 @@
 
     cmd_vel_listener = new ROSLIB.Topic({
       ros: ros,
-      name: "/cmd_vel",
+      name: '/cmd_vel',
       messageType: 'geometry_msgs/Twist'
     });
 
-    move = function (linear, angular) {
+    cmd_vel_listener.subscribe(function (m) {
+      document.getElementById("twist_msg").innerHTML = m.data;
+      move(1, 1);
+    });
+
+
+    // move = function (linear, angular) {         //creates a placeholder
+    //   var twist = new ROSLIB.Message({
+    //     linear: {
+    //       x: linear,
+    //       y: 0,
+    //       z: 0
+    //     },
+    //     angular: {
+    //       x: 0,
+    //       y: 0,
+    //       z: angular
+    //     }
+    //   });
+    //   cmd_vel_listener.publish(twist);
+    // }
+
+    move = function (linear, angular) {         //creates a placeholder
       var twist = new ROSLIB.Message({
         linear: {
           x: linear,
@@ -64,6 +86,7 @@
   <h1>Simple ROS User Interface</h1>
   <p>Connection status: <span id="status"></span></p>
   <p>Last message on /txt_msg: <span id="msg"></span></p>
+  <p>Message from /cmd_vel: <span id="twist_msg"></span></p>
 <!--  <div id="zone_joystick" style="position: relative;"></div>-->
 </body>
 
