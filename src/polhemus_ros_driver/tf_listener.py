@@ -31,6 +31,7 @@ if __name__ == '__main__':
 
             #create a url socket server for a connection 
             #1.publish the data to a topic
+
             with open('transformation.txt', 'a') as file:
                 file.write(data)
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
