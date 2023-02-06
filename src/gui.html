@@ -13,7 +13,7 @@
     });
 
     ros.on('connection', function () {
-      document.getElementById("status").innerHTML = "Connected";
+      document.getElementById("status").innerHTML = "Connecteddddddddddddddd";
     });
 
     ros.on('error', function (error) {
@@ -30,21 +30,61 @@
       messageType: 'std_msgs/String'
     });
 
-    txt_listener.subscribe(function (m) {
-      document.getElementById("msg").innerHTML = m.data;
-      move(1, 0);
-    });
+     
+    // txt_listener.publish(function (m) {
+    //   document.getElementById("msg").innerHTML = m.data;
+    //   letter('dataaa');
+    // });
+   
 
-    cmd_vel_listener = new ROSLIB.Topic({
+    var cmd_vel_listener = new ROSLIB.Topic({
       ros: ros,
       name: '/cmd_vel',
       messageType: 'geometry_msgs/Twist'
     });
 
+    // var cmd_vel = new ROSLIB.Topic({
+    //   ros: ros,
+    //   name: '/cmd_vel2',
+    //   messageType: 'geometry_msgs/Twist'
+    // });
+
+
+    
     cmd_vel_listener.subscribe(function (m) {
       document.getElementById("twist_msg").innerHTML = m.data;
-      move(1, 1);
+      move(2, 2, 2, 2, 2, 2);
     });
+    
+
+    move = function (lx, ly, lz, ax, ay, az) {         //creates a placeholder
+      var twist = new ROSLIB.Message({
+        linear: {
+          x: lx,
+          y: ly,
+          z: lz
+        },
+        angular: {
+          x: ax,
+          y: ay,
+          z: az
+        }
+      });
+      cmd_vel_listener.publish(twist);
+    }
+
+    // letter = function (test) {         //creates a placeholder
+    //   var l = new ROSLIB.Message({
+    //    data: test
+    //   });
+    //   txt_listener.publish(l);
+    // }
+
+    var letterr = new ROSLIB.Message({
+      data: 'helo'
+     
+    });
+    txt_listener.publish(letterr);
 
 
     // move = function (linear, angular) {         //creates a placeholder
@@ -63,21 +103,8 @@
     //   cmd_vel_listener.publish(twist);
     // }
 
-    move = function (linear, angular) {         //creates a placeholder
-      var twist = new ROSLIB.Message({
-        linear: {
-          x: linear,
-          y: 0,
-          z: 0
-        },
-        angular: {
-          x: 0,
-          y: 0,
-          z: angular
-        }
-      });
-      cmd_vel_listener.publish(twist);
-    }
+   
+
 
   </script>
 </head>
@@ -86,7 +113,7 @@
   <h1>Simple ROS User Interface</h1>
   <p>Connection status: <span id="status"></span></p>
   <p>Last message on /txt_msg: <span id="msg"></span></p>
-  <p>Message from /cmd_vel: <span id="twist_msg"></span></p>
+  <p>Message from /cmd_vel: <span id="txt_msg"></span></p>
 <!--  <div id="zone_joystick" style="position: relative;"></div>-->
 </body>
 
