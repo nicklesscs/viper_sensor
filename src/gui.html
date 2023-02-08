@@ -16,18 +16,27 @@
       document.getElementById("status").innerHTML = "Connecteddddddddd";
     });
 
-    ros.on('error', function (error) {
+    ros.on('error', function (error) {                //will send error message
       document.getElementById("status").innerHTML = "Error";
     });
 
-    ros.on('close', function () {
+    ros.on('close', function () {                      //will send closed message
       document.getElementById("status").innerHTML = "Closed";
     });
 
+    
+    
     var txt_listener = new ROSLIB.Topic({            //can listern to this and get "letterrr"'s output
       ros: ros,
       name: '/txt_msg',
       messageType: 'std_msgs/String'
+    });
+
+
+    var cmd_vel_listener = new ROSLIB.Topic({         //will be listening for somethings output for twist
+      ros: ros,
+      name: '/cmd_vel',
+      messageType: 'geometry_msgs/Twist'
     });
 
      
@@ -37,11 +46,6 @@
     // });
    
 
-    var cmd_vel_listener = new ROSLIB.Topic({
-      ros: ros,
-      name: '/cmd_vel',
-      messageType: 'geometry_msgs/Twist'
-    });
 
     // var cmd_vel = new ROSLIB.Topic({
     //   ros: ros,
@@ -51,51 +55,65 @@
 
 
     
-    cmd_vel_listener.subscribe(function (m) {
-      document.getElementById("twist_msg").innerHTML = m.data;
-      move(2, 2, 2, 2, 2, 2);
-    });
+    // cmd_vel_listener.subscribe(function (m) {                    //didnt need this because we werent listening yet.
+    //   document.getElementById("twist_msg").innerHTML = m.data;
+    //   move(2, 2, 2, 2, 2, 2);
+    // });
     
 
-    move = function (lx, ly, lz, ax, ay, az) {         //creates a placeholder
-      var twist = new ROSLIB.Message({
-        linear: {
-          x: lx,
-          y: ly,
-          z: lz
-        },
-        angular: {
-          x: ax,
-          y: ay,
-          z: az
-        }
-      });
-      cmd_vel_listener.publish(twist);
-    }
-
-    // letter = function (test) {         //creates a placeholder
-    //   var l = new ROSLIB.Message({
-    //    data: test
+    // move = function (lx, ly, lz, ax, ay, az) {         //creates a placeholder
+    //   var twist = new ROSLIB.Message({
+    //     linear: {
+    //       x: 2,
+    //       y: 2,
+    //       z: 2
+    //     },
+    //     angular: {
+    //       x: 3,
+    //       y: 3,
+    //       z: 3
+    //     }
     //   });
-    //   txt_listener.publish(l);
+    //   cmd_vel_listener.publish(twist);
     // }
 
-    var letterr = new ROSLIB.Message({      //this will publish to terminal
+
+    
+    var twist = new ROSLIB.Message({       //defined the twist message we are sending
+      linear: {
+        x: 2,
+        y: 2,
+        z: 2
+      },
+      angular: {
+        x: 3,
+        y: 3,
+        z: 3
+      }
+    });
+    
+    cmd_vel_listener.publish(twist);
+    //JSON.stringify(twist);
+    
+
+
+    var letterr = new ROSLIB.Message({      //this will publish a string to terminal
       data: 'helo'
      
     });
     txt_listener.publish(letterr);
     
-    // let letterr = data;
-    //print("letterr:", letterr)   //will ask the webpacg to print the output of this
+    
+    ros.on('connection', function () {      //will send the string we want
+      document.getElementById("txt_msg").innerHTML = letterr.data;
+    });
 
-    
-    
-    ros.on('connection', function () {         //test test
-      document.getElementById("txt_msg").innerHTML = 'letterr';
+    ros.on('connection', function () {      //test test for twist
+      document.getElementById("twist_msg").innerHTML = twist;
     });
 
     
+
 
     
 
@@ -125,7 +143,7 @@
   <h1>Simple ROS User Interface</h1>
   <p>Connection status: <span id="status"></span></p>
   <p>Last message on /txt_msg: <span id="txt_msg"></span></p>
-  <p>Message from /cmd_vel: <span id="msg"></span></p>
+  <p>Message from /cmd_vel: <span id="twist_msg"></span></p>
 <!--  <div id="zone_joystick" style="position: relative;"></div>-->
 </body>
 
