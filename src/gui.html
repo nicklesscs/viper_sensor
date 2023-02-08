@@ -108,8 +108,8 @@
       document.getElementById("txt_msg").innerHTML = letterr.data;
     });
 
-    ros.on('connection', function () {      //test test for twist
-      document.getElementById("twist_msg").innerHTML = twist;
+    ros.on('connection', function () {      //test test for twist      alert(JSON.stringify(twist))
+      document.getElementById("twist_msg").innerHTML = JSON.stringify(twist);
     });
 
     
