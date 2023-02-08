@@ -12,8 +12,8 @@
       url: 'ws://localhost:9090'
     });
 
-    ros.on('connection', function () {
-      document.getElementById("status").innerHTML = "Connecteddddddddddddddd";
+    ros.on('connection', function () {         //this will send a published message to the websocket
+      document.getElementById("status").innerHTML = "Connecteddddddddd";
     });
 
     ros.on('error', function (error) {
@@ -24,7 +24,7 @@
       document.getElementById("status").innerHTML = "Closed";
     });
 
-    var txt_listener = new ROSLIB.Topic({
+    var txt_listener = new ROSLIB.Topic({            //can listern to this and get "letterrr"'s output
       ros: ros,
       name: '/txt_msg',
       messageType: 'std_msgs/String'
@@ -80,12 +80,24 @@
     //   txt_listener.publish(l);
     // }
 
-    var letterr = new ROSLIB.Message({
+    var letterr = new ROSLIB.Message({      //this will publish to terminal
       data: 'helo'
      
     });
     txt_listener.publish(letterr);
+    
+    // let letterr = data;
+    //print("letterr:", letterr)   //will ask the webpacg to print the output of this
 
+    
+    
+    ros.on('connection', function () {         //test test
+      document.getElementById("txt_msg").innerHTML = 'letterr';
+    });
+
+    
+
+    
 
     // move = function (linear, angular) {         //creates a placeholder
     //   var twist = new ROSLIB.Message({
@@ -112,8 +124,8 @@
 <body>
   <h1>Simple ROS User Interface</h1>
   <p>Connection status: <span id="status"></span></p>
-  <p>Last message on /txt_msg: <span id="msg"></span></p>
-  <p>Message from /cmd_vel: <span id="txt_msg"></span></p>
+  <p>Last message on /txt_msg: <span id="txt_msg"></span></p>
+  <p>Message from /cmd_vel: <span id="msg"></span></p>
 <!--  <div id="zone_joystick" style="position: relative;"></div>-->
 </body>
 
