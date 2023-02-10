@@ -9,7 +9,7 @@
 
   <script type="text/javascript" type="text/javascript">
     var ros = new ROSLIB.Ros({
-      url: 'ws://localhost:9090'            //from 9090
+      url: 'ws://localhost:9090'            //may or may not give error with the sensor
     });
 
     ros.on('connection', function () {         //this will send a published message to the websocket
@@ -25,7 +25,7 @@
     });
 
     
-    
+    //------------------------------listeners to assign topics to messages--------------------------------------
     var txt_listener = new ROSLIB.Topic({            //can listern to this and get "letterrr"'s output
       ros: ros,
       name: '/txt_msg',
@@ -33,20 +33,13 @@
     });
 
 
-    var cmd_vel_listener = new ROSLIB.Topic({         //will be listening for somethings output for twist
+    var cmd_vel_listener = new ROSLIB.Topic({         //created a new topic called /cmd_vel
       ros: ros,
       name: '/cmd_vel',
       messageType: 'geometry_msgs/Twist'
     });
-
-     
-    // txt_listener.publish(function (m) {
-    //   document.getElementById("msg").innerHTML = m.data;
-    //   letter('dataaa');
-    // });
+    //----------------------------------------------------------------------------------------------------------
    
-
-
     // var cmd_vel = new ROSLIB.Topic({
     //   ros: ros,
     //   name: '/cmd_vel2',
@@ -55,10 +48,12 @@
 
 
     
-    // cmd_vel_listener.subscribe(function (m) {                    //didnt need this because we werent listening yet.
-    //   document.getElementById("twist_msg").innerHTML = m.data;
-    //   move(2, 2, 2, 2, 2, 2);
-    // });
+    cmd_vel_listener.subscribe(function (m) {                    //subscribes to the topic /cmd_vel
+      document.getElementById("/cmd_vel").innerHTML = m.data;
+      //move(2, 2, 2, 2, 2, 2);
+    });
+
+    //--------------------------------------------------------------------------------------------------------
     
 
     // move = function (lx, ly, lz, ax, ay, az) {         //creates a placeholder
@@ -78,44 +73,41 @@
     // }
 
 
+    //we no longer want to publish because the message may overwrite the mesages from the sensor
+    // var twist = new ROSLIB.Message({       //defined the twist message we are sending
+    //   linear: {
+    //     x: 2,
+    //     y: 2,
+    //     z: 2
+    //   },
+    //   angular: {
+    //     x: 3,
+    //     y: 77777777,
+    //     z: 3
+    //   }
+    // });
     
-    var twist = new ROSLIB.Message({       //defined the twist message we are sending
-      linear: {
-        x: 2,
-        y: 2,
-        z: 2
-      },
-      angular: {
-        x: 3,
-        y: 77777777,
-        z: 3
-      }
-    });
-    
-    cmd_vel_listener.publish(twist);
-    //JSON.stringify(twist);
+    //cmd_vel_listener.publish(twist);
     
 
-
-    var letterr = new ROSLIB.Message({      //this will publish a string to terminal
+    var letterr = new ROSLIB.Message({      //this will define the variable letterr as a datatype string
       data: 'helo'
      
     });
-    txt_listener.publish(letterr);
+    //txt_listener.publish(letterr);
     
+    //-----------established connections to the website for variables------------------------------------------------------
     
-    ros.on('connection', function () {      //will send the string we want
+    ros.on('connection', function () {      //will send the string we want to the server
       document.getElementById("txt_msg").innerHTML = letterr.data;
     });
 
-    ros.on('connection', function () {      //test test for twist      alert(JSON.stringify(twist))
+    ros.on('connection', function () {      //test test for twist      
       document.getElementById("twist_msg").innerHTML = JSON.stringify(twist);
     });
 
-    
-
-
-    
+    //--------------------------------------------------------------------------------------------------------------------
+   
 
     // move = function (linear, angular) {         //creates a placeholder
     //   var twist = new ROSLIB.Message({
@@ -133,6 +125,15 @@
     //   cmd_vel_listener.publish(twist);
     // }
 
+  // run = function(self) {     //this function is meant to run in a loop
+  //   while(1){
+
+  //   }
+
+
+  // }
+
+    
    
 
 
