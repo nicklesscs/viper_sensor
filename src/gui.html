@@ -9,61 +9,141 @@
 
   <script type="text/javascript" type="text/javascript">
     var ros = new ROSLIB.Ros({
-      url: 'ws://localhost:9090'
+      url: 'ws://localhost:9090'            //from 9090
     });
 
-    ros.on('connection', function () {
+    ros.on('connection', function () {         //this will send a published message to the websocket
       document.getElementById("status").innerHTML = "Connected";
     });
 
-    ros.on('error', function (error) {
+    ros.on('error', function (error) {                //will send error message
       document.getElementById("status").innerHTML = "Error";
     });
 
-    ros.on('close', function () {
+    ros.on('close', function () {                      //will send closed message
       document.getElementById("status").innerHTML = "Closed";
     });
 
-    var txt_listener = new ROSLIB.Topic({
+    
+    
+    var txt_listener = new ROSLIB.Topic({            //can listern to this and get "letterrr"'s output
       ros: ros,
       name: '/txt_msg',
       messageType: 'std_msgs/String'
     });
 
-    txt_listener.subscribe(function (m) {
-      document.getElementById("msg").innerHTML = m.data;
-      move(1, 0);
-    });
 
-    cmd_vel_listener = new ROSLIB.Topic({
+    var cmd_vel_listener = new ROSLIB.Topic({         //will be listening for somethings output for twist
       ros: ros,
-      name: "/cmd_vel",
+      name: '/cmd_vel',
       messageType: 'geometry_msgs/Twist'
     });
 
-    move = function (linear, angular) {
-      var twist = new ROSLIB.Message({
-        linear: {
-          x: linear,
-          y: 0,
-          z: 0
-        },
-        angular: {
-          x: 0,
-          y: 0,
-          z: angular
-        }
-      });
-      cmd_vel_listener.publish(twist);
-    }
+     
+    // txt_listener.publish(function (m) {
+    //   document.getElementById("msg").innerHTML = m.data;
+    //   letter('dataaa');
+    // });
+   
+
+
+    // var cmd_vel = new ROSLIB.Topic({
+    //   ros: ros,
+    //   name: '/cmd_vel2',
+    //   messageType: 'geometry_msgs/Twist'
+    // });
+
+
+    
+    // cmd_vel_listener.subscribe(function (m) {                    //didnt need this because we werent listening yet.
+    //   document.getElementById("twist_msg").innerHTML = m.data;
+    //   move(2, 2, 2, 2, 2, 2);
+    // });
+    
+
+    // move = function (lx, ly, lz, ax, ay, az) {         //creates a placeholder
+    //   var twist = new ROSLIB.Message({
+    //     linear: {
+    //       x: 2,
+    //       y: 2,
+    //       z: 2
+    //     },
+    //     angular: {
+    //       x: 3,
+    //       y: 3,
+    //       z: 3
+    //     }
+    //   });
+    //   cmd_vel_listener.publish(twist);
+    // }
+
+
+    
+    var twist = new ROSLIB.Message({       //defined the twist message we are sending
+      linear: {
+        x: 2,
+        y: 2,
+        z: 2
+      },
+      angular: {
+        x: 3,
+        y: 77777777,
+        z: 3
+      }
+    });
+    
+    cmd_vel_listener.publish(twist);
+    //JSON.stringify(twist);
+    
+
+
+    var letterr = new ROSLIB.Message({      //this will publish a string to terminal
+      data: 'helo'
+     
+    });
+    txt_listener.publish(letterr);
+    
+    
+    ros.on('connection', function () {      //will send the string we want
+      document.getElementById("txt_msg").innerHTML = letterr.data;
+    });
+
+    ros.on('connection', function () {      //test test for twist      alert(JSON.stringify(twist))
+      document.getElementById("twist_msg").innerHTML = JSON.stringify(twist);
+    });
+
+    
+
+
+    
+
+    // move = function (linear, angular) {         //creates a placeholder
+    //   var twist = new ROSLIB.Message({
+    //     linear: {
+    //       x: linear,
+    //       y: 0,
+    //       z: 0
+    //     },
+    //     angular: {
+    //       x: 0,
+    //       y: 0,
+    //       z: angular
+    //     }
+    //   });
+    //   cmd_vel_listener.publish(twist);
+    // }
+
+   
+
 
   </script>
 </head>
 
 <body>
-  <h1>Simple ROS User Interface</h1>
+  <h1>Simple ROS Interface</h1>
   <p>Connection status: <span id="status"></span></p>
-  <p>Last message on /txt_msg: <span id="msg"></span></p>
+  <p>Last message on /txt_msg: <span id="txt_msg"></span></p>
+  <p>Message from /cmd_vel: <span id="twist_msg"></span></p>
 <!--  <div id="zone_joystick" style="position: relative;"></div>-->
 </body>
 
