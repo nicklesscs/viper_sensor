@@ -9,11 +9,11 @@
 
   <script type="text/javascript" type="text/javascript">
     var ros = new ROSLIB.Ros({
-      url: 'ws://localhost:9090'
+      url: 'ws://localhost:9090'            //from 9090
     });
 
     ros.on('connection', function () {         //this will send a published message to the websocket
-      document.getElementById("status").innerHTML = "Connecteddddddddd";
+      document.getElementById("status").innerHTML = "Connected";
     });
 
     ros.on('error', function (error) {                //will send error message
@@ -87,7 +87,7 @@
       },
       angular: {
         x: 3,
-        y: 3,
+        y: 77777777,
         z: 3
       }
     });
@@ -140,7 +140,7 @@
 </head>
 
 <body>
-  <h1>Simple ROS User Interface</h1>
+  <h1>Simple ROS Interface</h1>
   <p>Connection status: <span id="status"></span></p>
   <p>Last message on /txt_msg: <span id="txt_msg"></span></p>
   <p>Message from /cmd_vel: <span id="twist_msg"></span></p>
