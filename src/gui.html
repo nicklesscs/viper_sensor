@@ -26,9 +26,9 @@
 
     
     //------------------------------listeners to assign topics to messages--------------------------------------
-    var txt_listener = new ROSLIB.Topic({            //can listern to this and get "letterrr"'s output
+    var txt_listener = new ROSLIB.Topic({            //can listern to this and get "chatter"'s output
       ros: ros,
-      name: '/txt_msg',
+      name: '/chatter',
       messageType: 'std_msgs/String'
     });
 
@@ -40,18 +40,22 @@
     });
     //----------------------------------------------------------------------------------------------------------
    
-    // var cmd_vel = new ROSLIB.Topic({
-    //   ros: ros,
-    //   name: '/cmd_vel2',
-    //   messageType: 'geometry_msgs/Twist'
-    // });
+    txt_listener.subscribe(function (text) {                    //subscribes to the topic /cmd_vel
+      document.getElementById("/chatter").innerHTML = text.data;
+      //move(2, 2, 2, 2, 2, 2);
+    }); 
+
+    // var txt_listener = ROSLIB.subscribe("/chatter")
+    // print(txt_listener)
 
 
     
-    cmd_vel_listener.subscribe(function (m) {                    //subscribes to the topic /cmd_vel
-      document.getElementById("/cmd_vel").innerHTML = m.data;
-      //move(2, 2, 2, 2, 2, 2);
-    });
+    // cmd_vel_listener.subscribe(function (m) {                    //subscribes to the topic /cmd_vel
+    //   document.getElementById("/tf_polhemus").innerHTML = m.data;
+    //   //move(2, 2, 2, 2, 2, 2);
+    // });
+
+    // cmd_vel_listener.publish(m);
 
     //--------------------------------------------------------------------------------------------------------
     
@@ -74,18 +78,18 @@
 
 
     //we no longer want to publish because the message may overwrite the mesages from the sensor
-    // var twist = new ROSLIB.Message({       //defined the twist message we are sending
-    //   linear: {
-    //     x: 2,
-    //     y: 2,
-    //     z: 2
-    //   },
-    //   angular: {
-    //     x: 3,
-    //     y: 77777777,
-    //     z: 3
-    //   }
-    // });
+    var twist = new ROSLIB.Message({       //defined the twist message we are sending
+      linear: {
+        x: 2,
+        y: 2,
+        z: 2
+      },
+      angular: {
+        x: 3,
+        y: 77777777,
+        z: 3
+      }
+    });
     
     //cmd_vel_listener.publish(twist);
     
@@ -94,18 +98,19 @@
       data: 'helo'
      
     });
-    //txt_listener.publish(letterr);
+    txt_listener.publish(letterr);
+
+    
     
     //-----------established connections to the website for variables------------------------------------------------------
-    
     ros.on('connection', function () {      //will send the string we want to the server
-      document.getElementById("txt_msg").innerHTML = letterr.data;
+      document.getElementById("/chatter").innerHTML = text.data;
     });
 
     ros.on('connection', function () {      //test test for twist      
       document.getElementById("twist_msg").innerHTML = JSON.stringify(twist);
     });
-
+    
     //--------------------------------------------------------------------------------------------------------------------
    
 
@@ -143,7 +148,7 @@
 <body>
   <h1>Simple ROS Interface</h1>
   <p>Connection status: <span id="status"></span></p>
-  <p>Last message on /txt_msg: <span id="txt_msg"></span></p>
+  <p>Last message on /txt_msg: <span id="/chatter"></span></p>
   <p>Message from /cmd_vel: <span id="twist_msg"></span></p>
 <!--  <div id="zone_joystick" style="position: relative;"></div>-->
 </body>
