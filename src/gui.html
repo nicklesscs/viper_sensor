@@ -50,16 +50,12 @@
 
 
     
-    cmd_vel_listener.subscribe(function (vel) {                    //subscribes to the twist
-      document.getElementById("/tf_polhemus").innerHTML = vel;
-      //move(2, 2, 2, 2, 2, 2);
-
-      // var position = vel.transforms[0].transform.translation;
-      // var orientation = vel.transforms[0].transform.rotation;
-      // var messageString = 'Position: (' + position.x + ',' + position.y + ',' + position.z + ')<br>' +
-      //                     'Orientation: (' + orientation.x + ',' + orientation.y + ',' + orientation.z + ',' + orientation.w + ')';
-     
-
+    cmd_vel_listener.subscribe(function (vel) {
+      var position = vel.transforms[0].transform.translation;
+      var orientation = vel.transforms[0].transform.rotation;
+      var messageString = 'Position: (' + position.x + ',' + position.y + ',' + position.z + ')<br>' +
+                      'Orientation: (' + orientation.x + ',' + orientation.y + ',' + orientation.z + ',' + orientation.w + ')';
+      document.getElementById("/tf_polhemus").innerHTML = messageString;
     });
 
     // cmd_vel_listener.publish(m);
