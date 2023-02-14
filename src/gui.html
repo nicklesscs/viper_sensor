@@ -33,14 +33,14 @@
     });
 
 
-    var cmd_vel_listener = new ROSLIB.Topic({         //created a new topic called /cmd_vel
+    var cmd_vel_listener = new ROSLIB.Topic({         //subscribed to a twist message
       ros: ros,
-      name: '/cmd_vel',
-      messageType: 'geometry_msgs/Twist'
+      name: '/tf_polhemus',
+      messageType: 'tf2_msgs/TFMessage'
     });
     //----------------------------------------------------------------------------------------------------------
    
-    txt_listener.subscribe(function (text) {                    //subscribes to the topic /cmd_vel
+    txt_listener.subscribe(function (text) {                    //subscribes to the topic text publisher
       document.getElementById("/chatter").innerHTML = text.data;
       //move(2, 2, 2, 2, 2, 2);
     }); 
@@ -50,10 +50,17 @@
 
 
     
-    // cmd_vel_listener.subscribe(function (m) {                    //subscribes to the topic /cmd_vel
-    //   document.getElementById("/tf_polhemus").innerHTML = m.data;
-    //   //move(2, 2, 2, 2, 2, 2);
-    // });
+    cmd_vel_listener.subscribe(function (vel) {                    //subscribes to the twist
+      document.getElementById("/tf_polhemus").innerHTML = vel;
+      //move(2, 2, 2, 2, 2, 2);
+
+      // var position = vel.transforms[0].transform.translation;
+      // var orientation = vel.transforms[0].transform.rotation;
+      // var messageString = 'Position: (' + position.x + ',' + position.y + ',' + position.z + ')<br>' +
+      //                     'Orientation: (' + orientation.x + ',' + orientation.y + ',' + orientation.z + ',' + orientation.w + ')';
+     
+
+    });
 
     // cmd_vel_listener.publish(m);
 
@@ -78,29 +85,33 @@
 
 
     //we no longer want to publish because the message may overwrite the mesages from the sensor
-    var twist = new ROSLIB.Message({       //defined the twist message we are sending
-      linear: {
-        x: 2,
-        y: 2,
-        z: 2
-      },
-      angular: {
-        x: 3,
-        y: 77777777,
-        z: 3
-      }
-    });
+    // var twist = new ROSLIB.Message({       //defined the twist message we are sending
+    //   linear: {
+    //     x: 2,
+    //     y: 2,
+    //     z: 2
+    //   },
+    //   angular: {
+    //     x: 3,
+    //     y: 77777777,
+    //     z: 3
+    //   }
+    // });
     
     //cmd_vel_listener.publish(twist);
     
 
-    var letterr = new ROSLIB.Message({      //this will define the variable letterr as a datatype string
-      data: 'helo'
+    // var letterr = new ROSLIB.Message({      //this will define the variable letterr as a datatype string
+    //   data: 'helo'
      
-    });
-    txt_listener.publish(letterr);
+    // });
+    // txt_listener.publish(letterr);
 
-    
+      var position = vel.transforms[0].transform.translation;
+      var orientation = vel.transforms[0].transform.rotation;
+      var messageString = 'Position: (' + position.x + ',' + position.y + ',' + position.z + ')<br>' +
+                          'Orientation: (' + orientation.x + ',' + orientation.y + ',' + orientation.z + ',' + orientation.w + ')';
+     
     
     //-----------established connections to the website for variables------------------------------------------------------
     ros.on('connection', function () {      //will send the string we want to the server
@@ -108,7 +119,9 @@
     });
 
     ros.on('connection', function () {      //test test for twist      
-      document.getElementById("twist_msg").innerHTML = JSON.stringify(twist);
+      //document.getElementById("/tf_polhemus").innerHTML = JSON.stringify(vel);
+      //document.getElementById("/tf_polhemus").innerHTML = messageString;
+      document.getElementById("/tf_polhemus").innerHTML = JSON.stringify(messageString);
     });
     
     //--------------------------------------------------------------------------------------------------------------------
@@ -149,7 +162,7 @@
   <h1>Simple ROS Interface</h1>
   <p>Connection status: <span id="status"></span></p>
   <p>Last message on /txt_msg: <span id="/chatter"></span></p>
-  <p>Message from /cmd_vel: <span id="twist_msg"></span></p>
+  <p>Message from /tf_polhemus: <span id="/tf_polhemus"></span></p>
 <!--  <div id="zone_joystick" style="position: relative;"></div>-->
 </body>
 
