@@ -9,18 +9,18 @@
 
   <script type="text/javascript" type="text/javascript">
     var ros = new ROSLIB.Ros({
-      url: 'ws://localhost:9090'            //may or may not give error with the sensor
+      url: 'ws://localhost:9090'                 //may or may not give error with the sensor
     });
 
-    ros.on('connection', function () {         //this will send a published message to the websocket
+    ros.on('connection', function () {           //this will send a published message to the websocket
       document.getElementById("status").innerHTML = "Connected";
     });
 
-    ros.on('error', function (error) {                //will send error message
+    ros.on('error', function (error) {           //will send error message
       document.getElementById("status").innerHTML = "Error";
     });
 
-    ros.on('close', function () {                      //will send closed message
+    ros.on('close', function () {                //will send closed message
       document.getElementById("status").innerHTML = "Closed";
     });
 
