@@ -5,6 +5,7 @@ const fs = require('fs');
 const PORT = 8080;
 const IP_ADDRESS = '130.215.175.244';
 
+
 fs.readFile('./gui.html', function (err, html) {
   if (err) throw err;
 
@@ -14,8 +15,19 @@ fs.readFile('./gui.html', function (err, html) {
     response.end();
   });
 
-  const wss = new WebSocket.Server({ server });
+    const data = {
+      name: 'John',
+      age: 30,
+      city: 'New York'
+    };
 
+// Convert the JSON data into a string
+    const jsonData = JSON.stringify(data);
+
+
+
+
+  const wss = new WebSocket.Server({ server });
   wss.on('connection', function connection(ws) {
     console.log('Client has connected');
 
@@ -23,9 +35,12 @@ fs.readFile('./gui.html', function (err, html) {
       console.log('received: %s', message);
     });
 
+    ws.send(jsonData);
+
     ws.on('close', () => {
       console.log('Client has disconnected');
     });
+
   });
 
   server.listen(PORT, IP_ADDRESS, function () {
