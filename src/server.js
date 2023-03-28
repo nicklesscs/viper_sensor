@@ -1,49 +1,71 @@
+// Import required modules
 const WebSocket = require('ws');
 const http = require('http');
 const fs = require('fs');
 
-const PORT = 8080;
-const IP_ADDRESS = '130.215.175.244';
+// Create HTTP server
+const server = http.createServer((request, response) => {
+  fs.readFile('./gui.html', (err, html) => {
+    if (err) {
+      throw err;
+    }
 
-
-fs.readFile('./gui.html', function (err, html) {
-  if (err) throw err;
-
-  const server = http.createServer(function(request, response) {
     response.writeHeader(200, {"Content-Type": "text/html"});
     response.write(html);
     response.end();
   });
+});
 
-    const data = {
-      name: 'John',
-      age: 30,
-      city: 'New York'
-    };
+// Create WebSocket server
+const wss = new WebSocket.Server({ server });
 
-// Convert the JSON data into a string
-    const jsonData = JSON.stringify(data);
+// Handle WebSocket connection
+wss.on('connection', (ws) => {
+  console.log('Client has connected');
 
+  // Handle incoming messages
+  ws.on('message', (message) => {
+    console.log(`received: ${message}`);
 
+  // Check if the message is of type 'tf_polhemus'
+  try {
+    const parsedMessage = JSON.parse(message);
+    if (parsedMessage.type === 'tf_polhemus') {
+      // Call sendTfPolhemusDataToClient function with the data
+      sendTfPolhemusDataToClient(parsedMessage.data);
+    }
+  } catch (e) {
+    console.error(`Error parsing message: ${e}`);
+  }
+});
 
-
-  const wss = new WebSocket.Server({ server });
-  wss.on('connection', function connection(ws) {
-    console.log('Client has connected');
-
-    ws.on('message', function incoming(message) {
-      console.log('received: %s', message);
-    });
-
-    ws.send(jsonData);
-
-    ws.on('close', () => {
-      console.log('Client has disconnected');
-    });
-
-  });
-
-  server.listen(PORT, IP_ADDRESS, function () {
-    console.log(`Server running at http://${IP_ADDRESS}:${PORT}/`);
+  // Handle WebSocket close event
+  ws.on('close', () => {
+    console.log('Client has disconnected');
   });
 });
+
+
+
+// Listen for connections on the server
+server.listen(8080, () => {
+  console.log('Server running at http://130.215.175.244:8080/');
+});
+
+function sendTfPolhemusDataToClient(data) {
+  // Convert data to JSON string
+  const jsonString = JSON.stringify({ type: 'tf_polhemus', data });
+
+  // Log the jsonString to the console
+  console.log('Sending tf_polhemus message:', jsonString);
+
+  // Send data to all connected WebSocket clients
+  wss.clients.forEach((client) => {
+
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(jsonString);
+      console.log('message sent');
+    }
+  });
+}
+
