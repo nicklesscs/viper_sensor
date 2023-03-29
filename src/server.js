@@ -64,7 +64,7 @@ function sendTfPolhemusDataToClient(data) {
 
     if (client.readyState === WebSocket.OPEN) {
       client.send(jsonString);
-      console.log('message sent');
+//      console.log('message sent');
     }
   });
 }

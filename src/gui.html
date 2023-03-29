@@ -4,10 +4,7 @@
 <head>
   <meta charset="utf-8" />
 
-  <script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.7.3/nipplejs.js"></script>
-
-  <script type="text/javascript" type="text/javascript">
+  <script type="text/javascript">
     var ros = new ROSLIB.Ros({
       url: 'ws://130.215.175.244:9090'
     });
@@ -30,34 +27,33 @@
       messageType: 'tf2_msgs/TFMessage'
     });
 
-  cmd_vel_listener.subscribe(function (vel) {
-    var position = vel.transforms[0].transform.translation;
-    var orientation = vel.transforms[0].transform.rotation;
-    var messageData = {
-      type: 'tf_polhemus',
-      data: {
-        position: { x: position.x, y: position.y, z: position.z },
-        orientation: { x: orientation.x, y: orientation.y, z: orientation.z, w: orientation.w }
-      }
-    };
+    // Create WebSocket connection to server
+    const ws = new WebSocket('ws://130.215.175.244:8080');
 
-  // send data to server
-  const ws = new WebSocket('ws://130.215.175.244:8080');
-  ws.onopen = function() {
-    ws.send(JSON.stringify(messageData), function(error) {
-      if (error) {
-        console.error('Failed to send data to server: ', error);
-      } else {
-        console.log('Data sent to server: ', messageData);
-      }
+    cmd_vel_listener.subscribe(function (vel) {
+      var position = vel.transforms[0].transform.translation;
+      var orientation = vel.transforms[0].transform.rotation;
+      var messageData = {
+        type: 'tf_polhemus',
+        data: {
+          position: { x: position.x, y: position.y, z: position.z },
+          orientation: { x: orientation.x, y: orientation.y, z: orientation.z, w: orientation.w }
+        }
+      };
+
+      // Send data to server
+      ws.send(JSON.stringify(messageData), function (error) {
+        if (error) {
+          console.error('Failed to send data to server: ', error);
+        } else {
+          console.log('Data sent to server: ', messageData);
+        }
+      });
+
+      var messageString = 'Position: (' + position.x + ',' + position.y + ',' + position.z + ')<br>' +
+                          'Orientation: (' + orientation.x + ',' + orientation.y + ',' + orientation.z + ',' + orientation.w + ')';
+      document.getElementById("/tf_polhemus").innerHTML = messageString;
     });
-  };
-
-  var messageString = 'Position: (' + position.x + ',' + position.y + ',' + position.z + ')<br>' +
-                      'Orientation: (' + orientation.x + ',' + orientation.y + ',' + orientation.z + ',' + orientation.w + ')';
-  document.getElementById("/tf_polhemus").innerHTML = messageString;
-});
-
 
   </script>
 </head>
