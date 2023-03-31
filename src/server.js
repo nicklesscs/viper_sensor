@@ -6,14 +6,18 @@ const fs = require('fs');
 // Create HTTP server
 const server = http.createServer((request, response) => {
   fs.readFile('./gui.html', (err, html) => {
-    if (err) {
-      throw err;
-    }
-
+  if (err) {
+    console.error(`Error reading file: ${err}`);
+    response.writeHeader(500, {"Content-Type": "text/plain"});
+    response.write("500 Internal Server Error");
+    response.end();
+  } else {
     response.writeHeader(200, {"Content-Type": "text/html"});
     response.write(html);
     response.end();
-  });
+  }
+});
+
 });
 
 // Create WebSocket server
