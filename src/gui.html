@@ -9,7 +9,7 @@
 
   <script type="text/javascript">
     var ros = new ROSLIB.Ros({
-      url: 'ws://130.215.213.241:9090'
+      url: 'ws://130.215.14.189:9090'
     });
 
     ros.on('connection', function () {
@@ -31,7 +31,7 @@
     });
 
     // Create WebSocket connection to server
-    const ws = new WebSocket('ws://130.215.213.241:8080');
+    const ws = new WebSocket('ws://1130.215.14.189:8080');
 
     cmd_vel_listener.subscribe(function (vel) {
       var position = vel.transforms[0].transform.translation;

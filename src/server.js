@@ -53,7 +53,7 @@ wss.on('connection', (ws) => {
 
 // Listen for connections on the server
 server.listen(8080, () => {
-  console.log('Server running at http://130.215.213.241:8080/');
+  console.log('Server running at http://130.215.14.189:8080/');
 });
 
 function sendTfPolhemusDataToClient(data) {
